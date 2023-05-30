@@ -1,28 +1,30 @@
 import puppeteer from 'puppeteer';
-import express from 'express';
+import express, { text } from 'express';
 import Connection from './connection.js';
 import cors from 'cors';
 
 const app = express();
+app.use(cors({ origin: 'http://127.0.0.1:5173/' }));
 
 app.use(express.json());
-app.use(cors);
 Connection();
 app.listen(3000, () => {
     console.log("Server is running at port 3000");
   });
 
-app.post('/api/posts', (req, res) => {
 
-    const { email, password } = req.body; 
+app.post('/api/search', (req, res) => {
+
+    const { email, password,query } = req.body; 
   
-    // quora(email,password);
+    quoraSearch(email,password,query);
   
-    res.status(201).json({ message: 'Post created successfully' });
+    res.status(201).json({ message: 'query successful' });
 });
 
 
-async function quora(email,password)
+
+async function quoraSearch(email,password,query)
 {
     const browser = await puppeteer.launch({headless:false},{timeout: 0});
     const page  = await browser.newPage();
@@ -35,11 +37,45 @@ async function quora(email,password)
     await page.waitForNavigation({timeout: 0});
     const selector1 = "#root > div > div.q-box > div > div.q-fixed.qu-fullX.qu-zIndex--header.qu-bg--raised.qu-borderBottom.qu-boxShadow--medium.qu-borderColor--raised > div > div:nth-child(2) > div > div.q-box.qu-flex--auto.qu-mx--small.qu-alignItems--center > div > div > form > div > div > div > div > div > input";
     await page.waitForSelector(selector1);
-    await page.type(selector1,"Best hotels in Banglore",{delay: 100});
+    await page.type(selector1,query,{delay: 100});
     await page.keyboard.press("Enter");
     await page.waitForNavigation({timeout: 0});
 
-    await browser.close();
+    const results = await page.evaluate(() => {
+        
+        const questionList = document.getElementsByClassName('q-box qu-borderBottom qu-p--medium qu-pb--tiny');
+        const questionResults = [];
+        const answerResults = [];
+        const userResults = [];
+        
+        const questionListArray =  Array.from(questionList).map(async (question)=>{
+             questionResults.push(question.querySelector('span > a > div > div > div > div > span').innerText);
+             const moreButton = question.querySelector('div > div:nth-child(1) > div > div.q-click-wrapper.qu-display--block.qu-tapHighlight--none.qu-cursor--pointer.ClickWrapper___StyledClickWrapperBox-zoqi4f-0.iyYUZT > div.q-box.spacing_log_answer_content.puppeteer_test_answer_content > div > div > div.q-absolute > div');
+             
+             userResults.push(question.querySelector('div > div:nth-child(1) > div > div.q-click-wrapper.qu-display--block.qu-tapHighlight--none.qu-cursor--pointer.ClickWrapper___StyledClickWrapperBox-zoqi4f-0.iyYUZT > div.q-flex > div > div > div > div > div.q-box.qu-flex--auto > div.q-box > span.q-box').innerText);
+
+           
+
+             moreButton.click();
+
+             setInterval(answerResults.push(question.querySelector('div > div:nth-child(1) > div > div.q-click-wrapper.qu-display--block.qu-tapHighlight--none.ClickWrapper___StyledClickWrapperBox-zoqi4f-0.iyYUZT > div.q-box.spacing_log_answer_content.puppeteer_test_answer_content > div.q-text > span > span').innerText),1000);
+
+          
+        });
+        
+        console.log(questionResults);
+        console.log(answerResults);
+        console.log(userResults);
+        
+
+
+     
+       
+    
+    });
+ 
+      
 
 }
-// quora();
+
+
