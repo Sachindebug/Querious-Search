@@ -2,6 +2,7 @@ import puppeteer from 'puppeteer';
 import express, { text } from 'express';
 import Connection from './connection.js';
 import cors from 'cors';
+import Result from './model.js';
 
 const app = express();
 app.use(cors({ origin: 'http://127.0.0.1:5173/' }));
@@ -12,14 +13,24 @@ app.listen(3000, () => {
     console.log("Server is running at port 3000");
   });
 
+let response;
 
-app.post('/api/search', (req, res) => {
+app.post('/api/search', async (req, res) => {
 
     const { email, password,query } = req.body; 
+
+    let results
+    results = await Result.findOne({query:query.toLowerCase().trim()});
+
+    if(results) return res.status(201).json(results);
+
   
-    quoraSearch(email,password,query);
+    const response = await quoraSearch(email,password,query);
+    // console.log(response, Object.keys(response), Object.values(response));
+    results = await Result.create({ query: query.toLowerCase().trim(), users:response.users, questions:response.questions,answers:response.answers});
+    // results = await Result.findOne({query});
   
-    res.status(201).json({ message: 'query successful' });
+    res.status(201).json(results);
 });
 
 
@@ -29,17 +40,18 @@ async function quoraSearch(email,password,query)
     const browser = await puppeteer.launch({headless:false},{timeout: 0});
     const page  = await browser.newPage();
     await page.goto("https://www.quora.com/");
-    await page.type("#email",email,{delay: 100});
-    await page.type("#password",password,{delay: 100});
+    await page.type("#email",email,{delay:100});
+    await page.type("#password",password,{delay:100});
     const selector = "#root > div > div.q-box > div > div > div > div > div > div.q-flex.qu-mb--large > div:nth-child(2) > div.q-flex.qu-justifyContent--space-between.qu-alignItems--center > button";
     await page.waitForSelector(selector);
     await page.click(selector);
     await page.waitForNavigation({timeout: 0});
     const selector1 = "#root > div > div.q-box > div > div.q-fixed.qu-fullX.qu-zIndex--header.qu-bg--raised.qu-borderBottom.qu-boxShadow--medium.qu-borderColor--raised > div > div:nth-child(2) > div > div.q-box.qu-flex--auto.qu-mx--small.qu-alignItems--center > div > div > form > div > div > div > div > div > input";
     await page.waitForSelector(selector1);
-    await page.type(selector1,query,{delay: 100});
+    await page.type(selector1,query,{delay:100});
     await page.keyboard.press("Enter");
     await page.waitForNavigation({timeout: 0});
+
 
     const results = await page.evaluate(() => {
         
@@ -66,16 +78,15 @@ async function quoraSearch(email,password,query)
         console.log(questionResults);
         console.log(answerResults);
         console.log(userResults);
-        
 
-
-     
-       
+        response = {
+            questions: questionResults,
+            answers: answerResults,
+            users: userResults
+        }
+        return response;
+});
+        browser.close();
+        return results;
     
-    });
- 
-      
-
 }
-
-

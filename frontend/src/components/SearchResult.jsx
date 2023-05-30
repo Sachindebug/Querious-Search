@@ -6,8 +6,7 @@ const SearchResult = () => {
     return (
         <div>
             <SearchBar />
-            <TopResults />
-            <ReletedQuestions />
+
         </div>
     )
 }

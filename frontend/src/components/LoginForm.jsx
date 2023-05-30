@@ -9,38 +9,28 @@ const LoginForm = () => {
     const navigateSearch = async (e) => {
         e.preventDefault();
         console.log("clicked");
-        try {
-            console.log("Apihit");
-            const response = await axios.post('http://localhost:3000/api/posts', {
-                email, password
-            });
-            console.log("Sachchhchchc");
-
-            console.log(response);
-
-            setEmail("");
-            setPassword("");
-            navigate('/search');
-
-        }
-        catch (error) {
-            console.log(error);
-        }
-        // if (email.length > 0 && password.length > 0) {
-
-        // }
+        sessionStorage.setItem("email", email);
+        sessionStorage.setItem("password", password);
+        navigate('/search');
     }
+
     return (
-        <div>
-            <div>
-                Email:
-                <input type="text" placeholder='Enter your email....' onChange={(e) => setEmail(e.target.value)} />
+        <div style={{ width: '350px' }} >
+            <div style={{ margin: '15px 0px 9px 0' }}>
+                <div style={{ marginBottom: '3px' }}>Email</div>
+                <input type="text" placeholder='Enter your email....' onChange={(e) => setEmail(e.target.value)}
+                    style={{ lineHeight: '2rem', display: 'block', width: '100%' }} />
             </div>
             <div>
-                Password:
-                <input type="password" onChange={(e) => setPassword(e.target.value)} />
-                <button onClick={navigateSearch}> Login</button>
+                <div style={{ marginBottom: '3px' }}>
+                    Password
+                </div>
+                <input type="password" onChange={(e) => setPassword(e.target.value)}
+                    style={{ lineHeight: '2rem', display: 'block', width: '100%' }} />
+
             </div>
+            <button onClick={navigateSearch}
+                style={{ marginTop: '20px', display: 'block', width: '100%' }}> Login</button>
 
 
         </div>

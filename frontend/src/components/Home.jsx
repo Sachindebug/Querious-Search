@@ -5,7 +5,7 @@ import LoginForm from './LoginForm';
 const Home = () => {
     return (
         <div>
-            Please Login before Search!!!
+            Login before Search!!!
             <LoginForm />
         </div>
     )
