@@ -6,7 +6,6 @@ const SearchResult = () => {
     return (
         <div>
             <SearchBar />
-
         </div>
     )
 }

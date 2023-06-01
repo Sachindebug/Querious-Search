@@ -5,7 +5,10 @@ import LoginForm from './LoginForm';
 const Home = () => {
     return (
         <div>
-            Login before Search!!!
+            <div style={{ fontSize: '24px', fontWeight: 'bold' }}>
+                Login before Search!!!
+            </div>
+
             <LoginForm />
         </div>
     )

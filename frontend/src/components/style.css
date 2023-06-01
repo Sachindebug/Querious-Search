@@ -1,0 +1,17 @@
+.parent{
+    width: 100%;
+}
+.child1
+{
+    float: left;
+   
+    width:65%
+}
+.child2{
+    display: inline;
+    width: 30%;
+    float: right;
+    margin-left: 10px;
+    margin-top: 2rem;
+    
+}
