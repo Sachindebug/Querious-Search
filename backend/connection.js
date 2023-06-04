@@ -1,19 +1,41 @@
-import mongoose from "mongoose";
-import 'dotenv/config';
+import {dbConfig} from "./config/db.config.js";
+import Sequelize from "sequelize";
+import {Query} from './models/Query.model.js';
+import {Related} from './models/Related.model.js';
+import {Result} from './models/Result.model.js';
 
-const Connection = async () => {
-    const userName = process.env.MONGO_USERNAME;
-    const passWord = process.env.MONGO_PASSWORD;                 
+const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
+  host: dbConfig.HOST,
+  dialect: dbConfig.dialect,
+  operatorsAliases: false,
 
-    try{
-        await mongoose.connect(`mongodb+srv://${userName}:${passWord}@cluster0.0ri67st.mongodb.net/`,{ useNewUrlParser: true});
-        console.log("Database connected successfully!");
-    }
-    catch(error){
-        console.log("Error: ", error.message);
-    }
-}
+  pool: {
+    max: dbConfig.pool.max,
+    min: dbConfig.pool.min,
+    acquire: dbConfig.pool.acquire,
+    idle: dbConfig.pool.idle,
+  },
+});
 
-export default Connection;
+const db = {};
+
+db.Sequelize = Sequelize;
+db.sequelize = sequelize;
+
+db.query = Query(sequelize, Sequelize);
+db.related = Related(sequelize, Sequelize);
+db.result = Result(sequelize, Sequelize);
 
 
+db.query.hasMany(db.related, { as: "related_questions" });
+db.related.belongsTo(db.query, {
+  foreignKey: "queryId",
+  as: "query",
+});
+
+db.query.hasMany(db.result, { as: "results" });
+db.result.belongsTo(db.query, {
+  foreignKey: "queryId",
+  as: "query",
+});
+export default db;

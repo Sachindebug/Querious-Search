@@ -7,10 +7,9 @@ import './style.css';
 
 const SearchBar = () => {
     const [query, setQuery] = useState("");
-    const [users, setUsers] = useState([]);
-    const [questions, setQuestions] = useState([]);
-    const [answers, setAnswers] = useState([]);
-    const [reletedQuestions, setReletedQuestions] = useState([]);
+
+    const [results, setResults] = useState([]);
+    const [relatedQuestions, setRelatedQuestions] = useState([]);
     const [searched, setSearched] = useState(false);
 
     const navigate = useNavigate();
@@ -23,19 +22,18 @@ const SearchBar = () => {
             const password = sessionStorage.getItem("password");
             const q = query;
             setQuery("");
-            setUsers([]);
-            setQuestions([]);
-            setAnswers([]);
-            setReletedQuestions([]);
+            setResults([]);
+            setRelatedQuestions([]);
+            setSearched(false);
 
             const { data } = await axios.post('http://localhost:3000/api/search', {
                 email, password, query: q
             });
             console.log(data);
-            setUsers(data.users);
-            setQuestions(data.questions);
-            setAnswers(data.answers);
-            setReletedQuestions(data.reletedQuestions);
+
+            setResults(data.results);
+
+            setRelatedQuestions(data.related_questions);
             setSearched(true);
 
 
@@ -58,11 +56,11 @@ const SearchBar = () => {
                     <button onClick={searchQueryHandler}>Search</button>
 
                 </div>
-                <TopResults users={users} questions={questions} answers={answers} />
+                <TopResults results={results} />
 
             </div>
             <div className='child2'>
-                {searched && <ReletedQuestions reletedQuestions={reletedQuestions} />}
+                {relatedQuestions.length > 0 && <ReletedQuestions related_questions={relatedQuestions} />}
             </div>
         </div>
     )
