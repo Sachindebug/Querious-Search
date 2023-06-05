@@ -40,7 +40,7 @@ app.post('/api/search', async (req, res) => {
     {
         return res.status(200).json(exists);
     }
-    // return 
+   
     const result = await Query.create({userQuery:query});
     let results =  await quoraSearch(email,password,query);
     const data  = [];
@@ -56,9 +56,9 @@ app.post('/api/search', async (req, res) => {
         record['queryId'] = result.dataValues.id;
         data.push(record);
     }
-    console.log("data",data);
+    
     const result_res = await Result.bulkCreate(data);
-    console.log(result_res);
+  
     const rel =[];
     for (let r of related) {
         rel.push({
@@ -67,10 +67,9 @@ app.post('/api/search', async (req, res) => {
                    
                 })
     }
+
     const related_res = await Related.bulkCreate(rel);
     
-    
-   
     const response ={
         results:result_res,
         related_questions: related_res
