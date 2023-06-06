@@ -25,7 +25,7 @@ const SearchBar = () => {
             setResults([]);
             setRelatedQuestions([]);
             setSearched(false);
-
+            //updated url
             const { data } = await axios.post('querious-search-backend-production.up.railway.app/api/search', {
                 email, password, query: q
             });
