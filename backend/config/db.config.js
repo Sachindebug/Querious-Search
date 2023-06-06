@@ -1,9 +1,9 @@
 export const dbConfig = {
-    HOST: process.env.HOST,
-    USER: process.env.USER,
-    PASSWORD: process.env.PASSWORD,
-    DB: process.env.DB,
-    dialect: process.env.DIALECT,
+    HOST: process.env.MYSQLHOST,
+    USER: process.env.MYSQLUSER,
+    PASSWORD: process.env.MYSQLPASSWORD,
+    DB: process.env.MYSQLDATABASE,
+    dialect: "mysql",
     pool: {
       max: 5,
       min: 0,
