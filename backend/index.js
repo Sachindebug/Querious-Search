@@ -4,6 +4,7 @@ import puppeteer from 'puppeteer';
 import express from 'express';
 import cors from 'cors';
 import db from './connection.js';
+import { dbConfig } from './config/db.config.js';
 
 
 
@@ -163,7 +164,7 @@ async function quoraSearch(email,password,query)
 
 db.sequelize.sync().then(() => {
     console.log("DB Connected");
-    app.listen(3000,"0.0.0.0", () => {
-        console.log("Server is running at port 3000");
+    app.listen(dbConfig.PORT,"0.0.0.0", () => {
+        console.log(`Server is running at port ${dbConfig.PORT}`);
     });
 });
