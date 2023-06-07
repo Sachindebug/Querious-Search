@@ -12,7 +12,7 @@ const Result = db.result;
 const Related  = db.related;
 const app = express();
 
-app.use(cors({origin:'http://127.0.0.1:5173'}));
+app.use(cors());
 
 app.use(express.json());
 
@@ -163,7 +163,7 @@ async function quoraSearch(email,password,query)
 
 db.sequelize.sync().then(() => {
     console.log("DB Connected");
-    app.listen(3000, () => {
+    app.listen(3000,"0.0.0.0", () => {
         console.log("Server is running at port 3000");
     });
 });
