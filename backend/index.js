@@ -13,10 +13,17 @@ const Result = db.result;
 const Related  = db.related;
 const app = express();
 
-app.use(cors());
+app.use(cors(
+    {
+        origin:['*']
+    }
+));
 
 app.use(express.json());
-
+app.get('/',(req,res) =>{
+    res.header("Access-Control-Allow-Origin", "*");
+    res.send('hello world')
+})
 
 
 app.post('/api/search', async (req, res) => {
