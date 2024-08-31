@@ -1,5 +1,4 @@
-import React from 'react'
-
+/* eslint-disable react/prop-types */
 const ReletedQuestions = ({ related_questions }) => {
 
     return (

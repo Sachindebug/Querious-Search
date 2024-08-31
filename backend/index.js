@@ -6,31 +6,19 @@ import cors from 'cors';
 import db from './connection.js';
 import { dbConfig } from './config/db.config.js';
 
-
-
 const Query = db.query;
 const Result = db.result;
 const Related  = db.related;
 const app = express();
 
-app.use(cors(
-    {
-        origin:['*']
-    }
-));
+app.use(cors());
 
 app.use(express.json());
-app.get('/',(req,res) =>{
-    res.header("Access-Control-Allow-Origin", "*");
-    res.send('hello world')
-})
-
 
 app.post('/api/search', async (req, res) => {
     const { email, password,query:q} = req.body; 
     const query = q.trim().toLowerCase();
     
-
     const exists = await Query.findOne({
        where: {
         userQuery: query
@@ -117,15 +105,12 @@ async function quoraSearch(email,password,query)
             
             const questionListArray =  Array.from(questionList).map(async (question)=>{
                 questionResults.push(question.querySelector('span > a > div > div > div > div > span').innerText);
-                const moreButton = question.querySelector('div > div:nth-child(1) > div > div.q-click-wrapper.qu-display--block.qu-tapHighlight--none.qu-cursor--pointer.ClickWrapper___StyledClickWrapperBox-zoqi4f-0.iyYUZT > div.q-box.spacing_log_answer_content.puppeteer_test_answer_content > div > div > div.q-absolute > div');
+                const moreButton = question.querySelector('div > div:nth-child(1) > div > div.q-click-wrapper.qu-display--block.qu-tapHighlight--none.qu-cursor--pointer.ClickWrapper___StyledClickWrapperBox-zoqi4f-0 > div.q-box.spacing_log_answer_content.puppeteer_test_answer_content > div > div > div.q-absolute > div');
                 
-                userResults.push(question.querySelector('div > div:nth-child(1) > div > div.q-click-wrapper.qu-display--block.qu-tapHighlight--none.qu-cursor--pointer.ClickWrapper___StyledClickWrapperBox-zoqi4f-0.iyYUZT > div.q-flex > div > div > div > div > div.q-box.qu-flex--auto > div.q-box > span.q-box').innerText);
+                userResults.push(question.querySelector('div > div:nth-child(1) > div > div.q-click-wrapper.qu-display--block.qu-tapHighlight--none.qu-cursor--pointer.ClickWrapper___StyledClickWrapperBox-zoqi4f-0 > div.q-flex > div > div > div > div > div.q-box.qu-flex--auto > div.q-box > span.q-box').innerText);
                 moreButton.click();
 
-                setInterval(answerResults.push(question.querySelector('div > div:nth-child(1) > div > div.q-click-wrapper.qu-display--block.qu-tapHighlight--none.ClickWrapper___StyledClickWrapperBox-zoqi4f-0.iyYUZT > div.q-box.spacing_log_answer_content.puppeteer_test_answer_content > div.q-text > span > span').innerText),1000);
-
-
-            
+                setInterval(answerResults.push(question.querySelector('div > div:nth-child(1) > div > div.q-click-wrapper.qu-display--block.qu-tapHighlight--none.ClickWrapper___StyledClickWrapperBox-zoqi4f-0 > div.q-box.spacing_log_answer_content.puppeteer_test_answer_content > div.q-text > span > span').innerText),1000);
             });
             
             
@@ -145,7 +130,7 @@ async function quoraSearch(email,password,query)
     const page1 = await browser.newPage();
     await page1.goto(newLink);
     const relQuestions = await page1.evaluate(()=>{
-        const reletedQuestions = document.querySelectorAll('#root > div > div.q-box > div > div.q-box.puppeteer_test_question_main > div > div:nth-child(2) > div > div > div.q-box.dom_annotate_related_questions.qu-borderAll.qu-borderRadius--small.qu-borderColor--raised.qu-boxShadow--small.qu-mb--small.qu-bg--raised > div > div:nth-child(2) > div');
+        const reletedQuestions = document.querySelectorAll('#root > div > div.q-box > div > div.q-box.puppeteer_test_question_main > div > div:nth-child(2) > div > div > div.q-box .puppeteer_test_question_title');
         
         const reletedQuestionsList = [];
         const reletedQuestionsArray = Array.from(reletedQuestions);
@@ -171,7 +156,7 @@ async function quoraSearch(email,password,query)
 
 db.sequelize.sync().then(() => {
     console.log("DB Connected");
-    app.listen(dbConfig.PORT,"0.0.0.0", () => {
+    app.listen(8080,"127.0.0.1", () => {
         console.log(`Server is running at port ${dbConfig.PORT}`);
     });
 });

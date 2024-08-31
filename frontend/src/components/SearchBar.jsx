@@ -1,8 +1,7 @@
-import React, { useState } from 'react'
+import  { useState } from 'react'
 import TopResults from './TopResults';
 import ReletedQuestions from './ReletedQuestions';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'
 import './style.css';
 
 const SearchBar = () => {
@@ -10,9 +9,8 @@ const SearchBar = () => {
 
     const [results, setResults] = useState([]);
     const [relatedQuestions, setRelatedQuestions] = useState([]);
+    // eslint-disable-next-line no-unused-vars
     const [searched, setSearched] = useState(false);
-
-    const navigate = useNavigate();
 
     const searchQueryHandler = async (event) => {
         event.preventDefault();
@@ -26,7 +24,7 @@ const SearchBar = () => {
             setRelatedQuestions([]);
             setSearched(false);
             //updated url
-            const { data } = await axios.post('https://querious-search-backend-production.up.railway.app/', {
+            const { data } = await axios.post('http://127.0.0.1:8080/api/search', {
                 email, password, query: q
             });
             console.log(data);

@@ -1,10 +1,10 @@
 export const Result = (sequelize, DataTypes) => {
     const result = sequelize.define("result", {
       question: {
-        type: DataTypes.STRING
+        type: DataTypes.TEXT
       },
       answer: {
-        type: DataTypes.STRING
+        type: DataTypes.TEXT
       },
       user: {
         type: DataTypes.STRING

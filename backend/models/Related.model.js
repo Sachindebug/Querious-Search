@@ -1,7 +1,7 @@
 export const Related = (sequelize, DataTypes) => {
     const related = sequelize.define("related", {
       question: {
-        type: DataTypes.STRING
+        type: DataTypes.TEXT
       }
     });
   

@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
 const LoginForm = () => {
     const [email, setEmail] = useState("");
@@ -8,7 +7,6 @@ const LoginForm = () => {
     const navigate = useNavigate();
     const navigateSearch = async (e) => {
         e.preventDefault();
-        console.log("clicked");
         sessionStorage.setItem("email", email);
         sessionStorage.setItem("password", password);
         navigate('/search');
